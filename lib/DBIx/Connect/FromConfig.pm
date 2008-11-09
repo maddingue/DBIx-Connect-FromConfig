@@ -7,7 +7,7 @@ use DBI ();
 
 {
     no strict;
-    $VERSION = '0.03';
+    $VERSION = '0.04';
 }
 
 =head1 NAME
@@ -16,7 +16,7 @@ DBIx::Connect::FromConfig - Creates a DB connection from a configuration file
 
 =head1 VERSION
 
-Version 0.03
+Version 0.04
 
 
 =head1 SYNOPSIS
@@ -170,11 +170,20 @@ sub connect {
 
     my %db = ();
     my %db_param_name = (
-        CSV     => 'f_dir', 
-        Mock    => 'dbname', 
-        mysql   => 'database', 
-        Pg      => 'dbname', 
-        SQLite  => 'dbname', 
+        CSV         => 'f_dir',
+        DB2         => 'DATABASE',
+        Excel       => 'file',
+        InterBase   => 'database',
+        Mock        => 'dbname',
+        mysql       => 'database',
+        mysqlPP     => 'database',
+        Oracle      => 'sid',
+        Pg          => 'dbname',
+        PgLite      => 'dbname',
+        PgPP        => 'dbname',
+        SQLite      => 'dbname',
+        SQLite2     => 'dbname',
+        Sybase      => 'database',
     );
 
     my $section_name = $args{section} || 'database';
@@ -212,6 +221,8 @@ sub connect {
     }
 
     $db{driver} or croak "error: Database driver not specified";
+    exists $db_param_name{$db{driver}}
+        or croak "error: Database driver $db{driver} not supported";
     $db{username} ||= getpwuid($<);
 
     my $dbs = sprintf "dbi:$db{driver}:%s%s%s=%s%s", 
@@ -233,6 +244,10 @@ sub connect {
 =item C<Database driver not specified>
 
 B<(E)> The setting specifying the database driver was not found or was empty.
+
+=item C<Database driver %s not supported>
+
+B<(E)> The specified database driver is not supported by this module.
 
 =item C<No parameter given>
 

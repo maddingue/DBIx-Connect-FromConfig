@@ -1,5 +1,9 @@
 Revision history for DBIx-Connect-FromConfig
 
+0.04    2008.04.16 (SAPER)
+        [FEATURE] Added support for more DBI drivers. Trying to use an 
+        unsupported driver will result in a exception.
+
 0.03    2008.03.01 (SAPER)
         [DIST] Changed the name of the module so it can be published on the CPAN.       
         [CODE] The function is now always a class method, but can be installed in

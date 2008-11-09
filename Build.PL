@@ -8,6 +8,7 @@ my $builder = Module::Build->new(
     dist_author         => 'Sebastien Aperghis-Tramoni <sebastien@aperghis.net>',
     dist_version_from   => 'lib/DBIx/Connect/FromConfig.pm',
     requires => {
+        'perl'              => 5,
         'Carp'              => 0,
         'DBI'               => 0,
     },
