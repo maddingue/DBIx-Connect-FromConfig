@@ -1,0 +1,14 @@
+Revision history for DBIx-Connect-FromConfig
+
+0.03    2008.03.01 (SAPER)
+        [DIST] Changed the name of the module so it can be published on the CPAN.       
+        [CODE] The function is now always a class method, but can be installed in
+        DBI namesapce for easier use.
+
+0.02    2007.02.16 (SAPER)
+        [FEATURE] Added support for Config::Simple and Config::Tiny.
+        [FEATURE] Added support for "section" parameter.
+        [TESTS] Several improvments.
+
+0.01    2006.11.09 (SAPER)
+        First version, internal release.

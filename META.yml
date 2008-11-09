@@ -1,0 +1,22 @@
+---
+name: DBIx-Connect-FromConfig
+version: 0.03
+author:
+  - 'Sebastien Aperghis-Tramoni <sebastien@aperghis.net>'
+abstract: Creates a DB connection from a configuration file
+license: perl
+resources:
+  license: http://dev.perl.org/licenses/
+requires:
+  Carp: 0
+  DBI: 0
+build_requires:
+  Test::More: 0
+provides:
+  DBIx::Connect::FromConfig:
+    file: lib/DBIx/Connect/FromConfig.pm
+    version: 0.03
+generated_by: Module::Build version 0.2808
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+  version: 1.2
