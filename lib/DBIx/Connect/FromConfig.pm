@@ -102,7 +102,6 @@ sub connect {
     $db{driver} or croak "error: Database driver not specified";
     exists $db_param_name{$db{driver}}
         or croak "error: Database driver $db{driver} not supported";
-    $db{username} ||= getpwuid($<);
 
     my $dbs = sprintf "dbi:$db{driver}:%s%s%s=%s%s",
         ( $db{host} ? "host=$db{host};" : '' ),
