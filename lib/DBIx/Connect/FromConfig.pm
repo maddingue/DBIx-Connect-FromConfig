@@ -87,7 +87,8 @@ C<port> - the port of the database. May be empty.
 
 =item *
 
-C<options> - C<DBD> options, given as a plain string.
+C<options> - C<DBD> options, given as a plain string. Will be appended
+at the end of the constructed DSN.
 
 =item *
 
