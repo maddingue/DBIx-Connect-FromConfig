@@ -98,6 +98,10 @@ current user.
 
 C<password> - the password used to connect to the database. May be empty.
 
+=item *
+
+C<attributes> - C<DBI> attributes, like C<RaiseError> or C<AutoCommit>.
+
 =back
 
 
@@ -166,7 +170,9 @@ sub connect {
     croak "error: Odd number of arguments" if @args % 2 != 0;
 
     my %args = @args;
-    my @params = qw(driver host port database options username password);
+    my @params = qw<
+        driver host port database options username password attributes
+    >;
 
     my %db = ();
     my %db_param_name = (
@@ -220,6 +226,16 @@ sub connect {
         croak "error: Unknown type of configuration"
     }
 
+    # handle DBI attributes
+    if (ref $db{attributes}) {
+        croak "error: Attributes must be given as a hash reference or a string"
+            unless ref $db{attributes} eq "HASH";
+    }
+    else {
+        # copied from DBI::parse_dsn()
+        $db{attributes} = { split /\s*=>?\s*|\s*,\s*/, $attr, -1 };
+    }
+
     $db{driver} or croak "error: Database driver not specified";
     exists $db_param_name{$db{driver}}
         or croak "error: Database driver $db{driver} not supported";
@@ -231,7 +247,7 @@ sub connect {
         $db_param_name{$db{driver}}, $db{database}, 
         ( $db{options} ? ";$db{options}" : '' );
 
-    my $dbh = DBI->connect($dbs, $db{username}, $db{password});
+    my $dbh = DBI->connect($dbs, $db{username}, $db{password}, $db{attributes});
 
     return $dbh
 }
