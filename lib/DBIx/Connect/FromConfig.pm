@@ -264,6 +264,7 @@ Connect to a database, passing the settings in a plain hash reference:
         database    => 'bigapp', 
         username    => 'appuser', 
         password    => 'sekr3t', 
+        attributes  => { AutoCommit => 1, RaiseError => 1 },
     );
 
     my $dbh = DBI->connect_from_config(config => \%settings);
@@ -272,6 +273,16 @@ Connect to a database, passing the settings from a configuration file:
 
     my $config = Config::IniFiles->new(-file => '/etc/hebex/mail.conf');
     my $dbh = DBI->connect_from_config(config => $config);
+
+where the configuration file could look like:
+
+    [database]
+    driver      = Pg
+    host        = bigapp-db.society.com
+    database    = bigapp
+    username    = appuser
+    password    = sekr3t
+    attributes  = AutoCommit=1|RaiseError=1
 
 
 =head1 DIAGNOSTICS
