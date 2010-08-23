@@ -105,13 +105,13 @@ sub connect {
     }
 
     # construct the DSN
-    my $dbs = sprintf "dbi:$db{driver}:%s%s%s=%s%s",
+    my $dsn = sprintf "dbi:$db{driver}:%s%s%s=%s%s",
         ( $db{host} ? "host=$db{host};" : '' ),
         ( $db{port} ? "port=$db{port};" : '' ),
         $db_param_name{$db{driver}}, $db{database},
         ( $db{options} ? ";$db{options}" : '' );
 
-    my $dbh = DBI->connect($dbs, $db{username}, $db{password}, $db{attributes});
+    my $dbh = DBI->connect($dsn, $db{username}, $db{password}, $db{attributes});
 
     return $dbh
 }
