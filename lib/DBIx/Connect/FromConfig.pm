@@ -92,6 +92,7 @@ sub connect {
         or croak "error: Database driver $db{driver} not supported";
 
     # default values
+    $db{database}   = "" unless defined $db{database};
     $db{host}       = "" unless defined $db{host};
     $db{port}       = "" unless defined $db{port};
     $db{options}    = "" unless defined $db{options};
