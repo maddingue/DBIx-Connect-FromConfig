@@ -86,6 +86,9 @@ sub connect {
         croak "error: Unknown type of configuration"
     }
 
+    # default values
+    $db{attributes} ||= {};
+
     # handle DBI attributes
     if (ref $db{attributes}) {
         croak "error: Attributes must be given as a hash reference or a string"
@@ -93,7 +96,7 @@ sub connect {
     }
     else {
         # copied from DBI::parse_dsn()
-        $db{attributes} = { split /\s*=>?\s*|\s*,\s*/, $attr, -1 };
+        $db{attributes} = { split /\s*=>?\s*|\s*,\s*/, $db{attributes}, -1 };
     }
 
     $db{driver} or croak "error: Database driver not specified";
