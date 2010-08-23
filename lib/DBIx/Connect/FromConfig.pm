@@ -10,6 +10,114 @@ use DBI ();
     $VERSION = '0.04';
 }
 
+
+#
+# import()
+# ------
+sub import {
+    if (grep { /^-in_dbi$/i } @_) {
+        *DBI::connect_from_config = \&connect
+    }
+}
+
+
+#
+# connect()
+# -------
+sub connect {
+    my ($class, @args) = @_;
+    croak "error: No parameter given" unless @args;
+    croak "error: Odd number of arguments" if @args % 2 != 0;
+
+    my %args = @args;
+    my @params = qw<
+        driver host port database options username password attributes
+    >;
+
+    my %db = ();
+    my %db_param_name = (
+        CSV         => 'f_dir',
+        DB2         => 'DATABASE',
+        Excel       => 'file',
+        InterBase   => 'database',
+        Mock        => 'dbname',
+        mysql       => 'database',
+        mysqlPP     => 'database',
+        Oracle      => 'sid',
+        Pg          => 'dbname',
+        PgLite      => 'dbname',
+        PgPP        => 'dbname',
+        SQLite      => 'dbname',
+        SQLite2     => 'dbname',
+        Sybase      => 'database',
+    );
+
+    my $section_name = $args{section} || 'database';
+
+    my $config = $args{config};
+
+    # configuration in a Config::IniFiles object
+    if (eval { $config->isa('Config::IniFiles') }) {
+        for my $param (@params) {
+            $db{$param} = $config->val($section_name => $param)
+        }
+    }
+    # configuration in a Config::Simple object
+    elsif (eval { $config->isa('Config::Simple') }) {
+        my $block = $config->get_block($section_name);
+
+        for my $param (@params) {
+            $db{$param} = $block->{$param};
+        }
+    }
+    # configuration in a Config::Tiny object
+    elsif (eval { $config->isa('Config::Tiny') }) {
+        for my $param (@params) {
+            $db{$param} = $config->{$section_name}{$param};
+        }
+    }
+    # configuration in a hashref
+    elsif (ref $config eq 'HASH') {
+        for my $param (@params) {
+            $db{$param} = $config->{$param}
+        }
+    }
+    else {
+        croak "error: Unknown type of configuration"
+    }
+
+    # handle DBI attributes
+    if (ref $db{attributes}) {
+        croak "error: Attributes must be given as a hash reference or a string"
+            unless ref $db{attributes} eq "HASH";
+    }
+    else {
+        # copied from DBI::parse_dsn()
+        $db{attributes} = { split /\s*=>?\s*|\s*,\s*/, $attr, -1 };
+    }
+
+    $db{driver} or croak "error: Database driver not specified";
+    exists $db_param_name{$db{driver}}
+        or croak "error: Database driver $db{driver} not supported";
+    $db{username} ||= getpwuid($<);
+
+    my $dbs = sprintf "dbi:$db{driver}:%s%s%s=%s%s",
+        ( $db{host} ? "host=$db{host};" : '' ),
+        ( $db{port} ? "port=$db{port};" : '' ),
+        $db_param_name{$db{driver}}, $db{database},
+        ( $db{options} ? ";$db{options}" : '' );
+
+    my $dbh = DBI->connect($dbs, $db{username}, $db{password}, $db{attributes});
+
+    return $dbh
+}
+
+
+1; # End of DBIx::Connect::FromConfig
+
+
+__END__
+
 =head1 NAME
 
 DBIx::Connect::FromConfig - Creates a DB connection from a configuration file
@@ -48,14 +156,6 @@ This module does not export any function, but if given the C<-in_dbi>
 import option, it will install an alias of the C<connect()> function 
 in the C<DBI> namespace, thus allowing it to be called as a method of 
 C<DBI> (see the synopsis).
-
-=cut
-
-sub import {
-    if (grep { /^-in_dbi$/i } @_) {
-        *DBI::connect_from_config = \&connect
-    }
-}
 
 
 =head1 FUNCTIONS
@@ -163,96 +263,6 @@ Connect to a database, passing the settings from a configuration file:
     my $config = Config::IniFiles->new(-file => '/etc/hebex/mail.conf');
     my $dbh = DBI->connect_from_config(config => $config);
 
-=cut
-
-sub connect {
-    my ($class, @args) = @_;
-    croak "error: No parameter given" unless @args;
-    croak "error: Odd number of arguments" if @args % 2 != 0;
-
-    my %args = @args;
-    my @params = qw<
-        driver host port database options username password attributes
-    >;
-
-    my %db = ();
-    my %db_param_name = (
-        CSV         => 'f_dir',
-        DB2         => 'DATABASE',
-        Excel       => 'file',
-        InterBase   => 'database',
-        Mock        => 'dbname',
-        mysql       => 'database',
-        mysqlPP     => 'database',
-        Oracle      => 'sid',
-        Pg          => 'dbname',
-        PgLite      => 'dbname',
-        PgPP        => 'dbname',
-        SQLite      => 'dbname',
-        SQLite2     => 'dbname',
-        Sybase      => 'database',
-    );
-
-    my $section_name = $args{section} || 'database';
-
-    my $config = $args{config};
-
-    # configuration in a Config::IniFiles object
-    if (eval { $config->isa('Config::IniFiles') }) {
-        for my $param (@params) {
-            $db{$param} = $config->val($section_name => $param)
-        }
-    }
-    # configuration in a Config::Simple object
-    elsif (eval { $config->isa('Config::Simple') }) {
-        my $block = $config->get_block($section_name);
-
-        for my $param (@params) {
-            $db{$param} = $block->{$param};
-        }
-    }
-    # configuration in a Config::Tiny object
-    elsif (eval { $config->isa('Config::Tiny') }) {
-        for my $param (@params) {
-            $db{$param} = $config->{$section_name}{$param};
-        }
-    }
-    # configuration in a hashref
-    elsif (ref $config eq 'HASH') {
-        for my $param (@params) {
-            $db{$param} = $config->{$param}
-        }
-    }
-    else {
-        croak "error: Unknown type of configuration"
-    }
-
-    # handle DBI attributes
-    if (ref $db{attributes}) {
-        croak "error: Attributes must be given as a hash reference or a string"
-            unless ref $db{attributes} eq "HASH";
-    }
-    else {
-        # copied from DBI::parse_dsn()
-        $db{attributes} = { split /\s*=>?\s*|\s*,\s*/, $attr, -1 };
-    }
-
-    $db{driver} or croak "error: Database driver not specified";
-    exists $db_param_name{$db{driver}}
-        or croak "error: Database driver $db{driver} not supported";
-    $db{username} ||= getpwuid($<);
-
-    my $dbs = sprintf "dbi:$db{driver}:%s%s%s=%s%s", 
-        ( $db{host} ? "host=$db{host};" : '' ), 
-        ( $db{port} ? "port=$db{port};" : '' ), 
-        $db_param_name{$db{driver}}, $db{database}, 
-        ( $db{options} ? ";$db{options}" : '' );
-
-    my $dbh = DBI->connect($dbs, $db{username}, $db{password}, $db{attributes});
-
-    return $dbh
-}
-
 
 =head1 DIAGNOSTICS
 
@@ -335,7 +345,4 @@ Copyright 2008 Sébastien Aperghis-Tramoni, all rights reserved.
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
-
 =cut
-
-1; # End of DBIx::Connect::FromConfig
