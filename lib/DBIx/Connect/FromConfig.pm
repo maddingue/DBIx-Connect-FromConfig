@@ -102,7 +102,7 @@ sub connect {
 
     # handle DBI attributes
     if (ref $db{attributes}) {
-        croak "error: Attributes must be given as a hash reference or a string"
+        croak "error: DBI attributes must be given as a hashref or a string"
             unless ref $db{attributes} eq "HASH";
     }
     else {
@@ -285,6 +285,10 @@ B<(E)> The setting specifying the database driver was not found or was empty.
 =item C<Database driver %s not supported>
 
 B<(E)> The specified database driver is not supported by this module.
+
+=item C<DBI attributes must be given as a hashref or a string>
+
+B<(E)> The function was given an improper value for the DBI attributes.
 
 =item C<No parameter given>
 

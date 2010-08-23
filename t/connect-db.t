@@ -18,7 +18,7 @@ can_ok( 'DBIx::Connect::FromConfig' => 'connect' );
 can_ok( 'DBI' => 'connect_from_config');
 
 
-BEGIN { $tests += 6 }
+BEGIN { $tests += 8 }
 # check diagnostics when called as a standard class method
 eval { DBIx::Connect::FromConfig->connect() };
 like( $@, q{/^error: No parameter given/}, 
@@ -32,6 +32,14 @@ eval { DBIx::Connect::FromConfig->connect(config => []) };
 like( $@, q{/^error: Unknown type of configuration/}, 
     "calling DBIx::Connect::FromConfig->connect() with an arrayref as configuration" );
 
+eval {
+    DBIx::Connect::FromConfig->connect(
+        config => { driver => "Mock", attributes => [] }
+    );
+};
+like( $@, q{/^error: DBI attributes must be given as a hashref or a string/},
+    "calling DBIx::Connect::FromConfig->connect() with an improper value for the DBI attributes" );
+
 # check diagnostics when called as a DBI method
 eval { DBI->connect_from_config() };
 like( $@, q{/^error: No parameter given/}, 
@@ -44,6 +52,12 @@ like( $@, q{/^error: Odd number of arguments/},
 eval { DBI->connect_from_config(config => []) };
 like( $@, q{/^error: Unknown type of configuration/}, 
     "calling DBI->connect_from_config() with an arrayref as configuration" );
+
+eval {
+    DBI->connect_from_config(config => { driver => "Mock", attributes => [] });
+};
+like( $@, q{/^error: DBI attributes must be given as a hashref or a string/},
+    "calling DBI->connect_from_config() with an improper value for the DBI attributes" );
 
 
 my ($dbh, $sth);
