@@ -86,6 +86,11 @@ sub connect {
         croak "error: Unknown type of configuration"
     }
 
+    # check mandatory values
+    $db{driver} or croak "error: Database driver not specified";
+    exists $db_param_name{$db{driver}}
+        or croak "error: Database driver $db{driver} not supported";
+
     # default values
     $db{attributes} ||= {};
 
@@ -99,10 +104,7 @@ sub connect {
         $db{attributes} = { split /\s*=>?\s*|\s*,\s*/, $db{attributes}, -1 };
     }
 
-    $db{driver} or croak "error: Database driver not specified";
-    exists $db_param_name{$db{driver}}
-        or croak "error: Database driver $db{driver} not supported";
-
+    # construct the DSN
     my $dbs = sprintf "dbi:$db{driver}:%s%s%s=%s%s",
         ( $db{host} ? "host=$db{host};" : '' ),
         ( $db{port} ? "port=$db{port};" : '' ),
