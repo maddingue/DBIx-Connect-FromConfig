@@ -89,7 +89,7 @@ sub connect {
     # check mandatory values
     $db{driver} or croak "error: Database driver not specified";
     exists $db_param_name{$db{driver}}
-        or croak "error: Database driver $db{driver} not supported";
+        or croak "error: Database driver \Q$db{driver}\E not supported";
 
     # default values
     $db{database}   = "" unless defined $db{database};
