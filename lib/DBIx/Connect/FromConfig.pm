@@ -7,7 +7,7 @@ use DBI ();
 
 {
     no strict;
-    $VERSION = '0.04';
+    $VERSION = '0.05';
 }
 
 
@@ -134,7 +134,7 @@ DBIx::Connect::FromConfig - Creates a DB connection from a configuration file
 
 =head1 VERSION
 
-Version 0.04
+Version 0.05
 
 
 =head1 SYNOPSIS
