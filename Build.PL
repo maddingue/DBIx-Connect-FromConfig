@@ -14,6 +14,7 @@ my $builder = Module::Build->new(
     },
     build_requires => {
         'Test::More'        => 0,
+        'Module::Build'     => 0,
     },
     build_recommends => {
         'DBD::Mock'         => 0,
