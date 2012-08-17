@@ -282,7 +282,7 @@ where the configuration file could look like:
     database    = bigapp
     username    = appuser
     password    = sekr3t
-    attributes  = AutoCommit=1|RaiseError=1
+    attributes  = AutoCommit=1,RaiseError=1
 
 
 =head1 DIAGNOSTICS
