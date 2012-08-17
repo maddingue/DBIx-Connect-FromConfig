@@ -2,6 +2,7 @@ MANIFEST
 Build.PL
 Makefile.PL
 META.yml
+META.json
 Changes
 README
 lib/DBIx/Connect/FromConfig.pm
