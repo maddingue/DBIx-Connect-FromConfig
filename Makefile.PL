@@ -16,6 +16,11 @@ WriteMakefile(
         # build/test prereqs
         'Test::More'    => 0,
     },
+    META_MERGE          => {
+        resources       => {
+            repository  => "https://github.com/maddingue/DBIx-Connect-FromConfig.git",
+        },
+    },
     PL_FILES            => {},
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'DBIx-Connect-FromConfig-*' },

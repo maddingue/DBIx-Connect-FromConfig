@@ -1,5 +1,7 @@
 Revision history for DBIx-Connect-FromConfig
 
+        [DIST] Add meta-information in Makefile.PL
+
 0.06    2012.08.17 (SAPER)
         [DOC] CPAN-RT #70297: Pipe character not recognised in attributes
         [DOC] CPAN-RT #79039: Non-ASCII character seen before =encoding
