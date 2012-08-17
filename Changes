@@ -1,6 +1,7 @@
 Revision history for DBIx-Connect-FromConfig
 
         [DOC] CPAN-RT #70297: Pipe character not recognised in attributes
+        [DOC] CPAN-RT #79039: Non-ASCII character seen before =encoding
 
 0.05    2010.11.04 (SAPER)
         [FEATURE] Add support for DBI attributes.

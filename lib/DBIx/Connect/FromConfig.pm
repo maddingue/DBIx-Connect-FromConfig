@@ -365,7 +365,7 @@ L<http://search.cpan.org/dist/DBIx-Connect-FromConfig>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2008 Sébastien Aperghis-Tramoni, all rights reserved.
+Copyright 2008 SE<eacute>bastien Aperghis-Tramoni, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
