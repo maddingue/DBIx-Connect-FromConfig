@@ -129,7 +129,7 @@ SKIP: {
 BEGIN { $tests += 3 }
 # try to "connect" to a local database in CSV files
 SKIP: {
-    skip "DBD::CSV not available", 2 unless eval "use DBD::CSV; 1";
+    skip "DBD::CSV not available", 3 unless eval "use DBD::CSV; 1";
 
     my %settings = ( driver => "CSV", database => "t/db", options => "csv_sep_char=|" );
     $dbh = eval { DBI->connect_from_config(config => \%settings) };
