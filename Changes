@@ -1,5 +1,6 @@
 Revision history for DBIx-Connect-FromConfig
 
+0.07    2013.05.23 (SAPER)
         [DIST] Add meta-information in Makefile.PL
         [TESTS] Fix an incorrect number of tests in a skip().
 
